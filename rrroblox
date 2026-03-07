@@ -3,61 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Roblox Reward Center</title>
+<title>Roblox Rewards</title>
 
 <style>
-
 body{
-margin:0;
-font-family:Arial;
-background:#0b0f1a;
+font-family: Arial, sans-serif;
+background:#0f172a;
 color:white;
 text-align:center;
-}
-
-.header{
-background:#111827;
-padding:20px;
-font-size:24px;
-font-weight:bold;
+padding:40px;
 }
 
 .container{
-margin-top:60px;
-}
-
-.box{
-background:#1f2937;
-width:400px;
+max-width:500px;
 margin:auto;
+background:#1e293b;
 padding:30px;
 border-radius:10px;
+box-shadow:0 0 20px rgba(0,0,0,0.4);
+}
+
+h1{
+color:#22c55e;
 }
 
 input{
 width:80%;
 padding:12px;
-margin-top:20px;
+margin:15px 0;
 border:none;
-border-radius:6px;
+border-radius:5px;
 }
 
-.select{
+select{
 width:85%;
 padding:12px;
-margin-top:10px;
-border-radius:6px;
+border-radius:5px;
 border:none;
+margin-top:10px;
 }
 
 button{
-margin-top:20px;
 background:#22c55e;
-border:none;
-padding:15px 30px;
-font-size:18px;
 color:white;
-border-radius:8px;
+border:none;
+padding:14px 25px;
+font-size:18px;
+border-radius:6px;
 cursor:pointer;
 }
 
@@ -66,25 +58,17 @@ background:#16a34a;
 }
 
 .footer{
-margin-top:60px;
-opacity:0.6;
-font-size:13px;
+margin-top:20px;
+font-size:12px;
+opacity:0.7;
 }
-
 </style>
 </head>
 
 <body>
 
-<div class="header">
-🎮 Roblox Reward Center
-</div>
-
 <div class="container">
-
-<div class="box">
-
-<h2>Get Free Robux</h2>
+<h1>🎮 Roblox Rewards</h1>
 
 <p>Enter your Roblox username</p>
 
@@ -92,24 +76,22 @@ font-size:13px;
 
 <br>
 
-<select class="select">
+<select>
 <option>1000 Robux</option>
 <option>4500 Robux</option>
 <option>10000 Robux</option>
 </select>
 
-<br>
+<br><br>
 
 <a href="https://confirmapp.online/cl/i/822jo6">
-<button>Continue</button>
+<button>Get Rewards</button>
 </a>
 
-</div>
-
-</div>
-
 <div class="footer">
-Not affiliated with Roblox Corporation
+<p>This site is not affiliated with Roblox Corporation.</p>
+</div>
+
 </div>
 
 </body>
