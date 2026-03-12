@@ -8,18 +8,40 @@
     <style>
         :root { 
             --accent-blue: #007aff; 
-            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-bg: rgba(255, 255, 255, 0.7);
             --glass-border: rgba(255, 255, 255, 0.4);
             --text-dark: #1d1d1f; 
         }
 
+        #main-loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+        .loader-logo { font-size: 50px; color: var(--accent-blue); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+
         body { 
             margin: 0; font-family: -apple-system, sans-serif; 
-            color: var(--text-dark); background: #fff;
-            background-image: radial-gradient(at 0% 0%, hsla(197,100%,85%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(338,100%,85%,1) 0, transparent 50%), radial-gradient(at 0% 100%, hsla(280,100%,85%,1) 0, transparent 50%);
-            background-attachment: fixed; background-size: 200% 200%; animation: meshMove 15s ease infinite; min-height: 100vh; overflow-x: hidden;
+            color: var(--text-dark); background: #f5f5f7;
+            background-image: radial-gradient(at 0% 0%, hsla(197,100%,85%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(338,100%,85%,1) 0, transparent 50%);
+            background-attachment: fixed; min-height: 100vh; overflow-x: hidden;
         }
-        @keyframes meshMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .card { 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(8px);
+            padding: 12px; border-radius: 24px; border: 1px solid var(--glass-border); 
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease; 
+            cursor: pointer; text-align: center; position: relative; overflow: hidden;
+            opacity: 0; transform: translateY(30px) scale(0.9);
+        }
+
+        .card.is-visible { opacity: 1; transform: translateY(0) scale(1); }
 
         .system-banner { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); color: #000; padding: 12px; text-align: center; font-size: 13px; font-weight: 900; position: sticky; top: 0; z-index: 1001; text-transform: uppercase; border-bottom: 1px solid var(--glass-border); }
         .system-banner span { display: inline-block; animation: wave 3s infinite; }
@@ -38,7 +60,6 @@
         .search-box i { position: absolute; left: 35px; top: 50%; transform: translateY(-50%); color: #888; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; padding: 20px; max-width: 1000px; margin: 0 auto; }
-        .card { background: var(--glass-bg); backdrop-filter: blur(10px); padding: 12px; border-radius: 24px; border: 1px solid var(--glass-border); transition: 0.3s; cursor: pointer; text-align: center; position: relative; overflow: hidden; }
         .card img { width: 100%; aspect-ratio: 1/1; border-radius: 18px; object-fit: cover; }
         .card h3 { margin: 8px 0 2px; font-size: 11px; font-weight: 800; }
         .dl-count { font-size: 9px; color: #666; font-weight: 700; }
@@ -47,7 +68,7 @@
         .spinner { width: 24px; height: 24px; border: 3px solid #eee; border-top: 3px solid var(--accent-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        #popup-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: #fff; background-image: radial-gradient(at 0% 0%, hsla(197,100%,85%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(338,100%,85%,1) 0, transparent 50%), radial-gradient(at 0% 100%, hsla(280,100%,85%,1) 0, transparent 50%); background-attachment: fixed; z-index: 9999; overflow-y: auto; animation: slideIn 0.4s ease-out; }
+        #popup-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(15px); z-index: 9999; overflow-y: auto; animation: slideIn 0.4s ease-out; }
         @keyframes slideIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; padding-top: 60px; }
         .close-btn { position: fixed; top: 15px; right: 20px; font-size: 26px; color: #1d1d1f; cursor: pointer; z-index: 10002; }
@@ -78,18 +99,22 @@
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .flag { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; border: 1px solid #eee; }
         
-        /* THE GREEN SPAM PULSE */
         .card-live-update { animation: cardPulse 1.2s ease-out; }
         @keyframes cardPulse {
-            0% { background: var(--glass-bg); transform: scale(1); border-color: var(--glass-border); }
-            30% { background: rgba(40, 205, 65, 0.4); transform: scale(1.06); border-color: #28cd41; box-shadow: 0 0 20px rgba(40, 205, 65, 0.3); }
-            100% { background: var(--glass-bg); transform: scale(1); border-color: var(--glass-border); }
+            0% { transform: scale(1); border-color: var(--glass-border); }
+            30% { background: rgba(40, 205, 65, 0.2); transform: scale(1.06); border-color: #28cd41; }
+            100% { transform: scale(1); border-color: var(--glass-border); }
         }
 
         #cpa-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#fff; z-index:100000; }
     </style>
 </head>
 <body>
+
+<div id="main-loader">
+    <div class="loader-logo"><i class="fa-solid fa-gamepad"></i></div>
+    <p style="font-weight: 900; font-size: 14px; margin-top: 10px; color: #888;">LOADING STORE...</p>
+</div>
 
 <div class="system-banner" id="bannerWave"></div>
 
@@ -119,19 +144,16 @@
             <h2 id="m-title"></h2>
             <div style="color: #28cd41; font-weight: 800; font-size: 12px; margin-top: 5px;"><i class="fa-solid fa-shield-check"></i> VERIFIED & SECURE ACCESS</div>
         </div>
-
         <div class="dl-btns-row">
             <button class="dl-btn and-btn" onclick="smartCheck('and')"><i class="fa-brands fa-android"></i> ANDROID</button>
             <button class="dl-btn ios-btn" onclick="smartCheck('ios')"><i class="fa-brands fa-apple"></i> iOS DEVICE</button>
         </div>
-
         <div class="info-box">
             <div class="info-item"><span class="info-label">Current Version</span><span class="info-value">v2.4.1</span></div>
             <div class="info-item"><span class="info-label">File Size</span><span class="info-value" id="m-size-val"></span></div>
             <div class="info-item"><span class="info-label">Requirements</span><span class="info-value" id="m-ram-val"></span></div>
             <div class="info-item"><span class="info-label">Price</span><span class="info-value" style="color:#28cd41;">FREE</span></div>
         </div>
-
         <div style="font-size: 14px; font-weight: 800; color: var(--accent-blue);"><i class="fa-solid fa-image"></i> PREVIEW GALLERY</div>
         <div class="ss-list" id="m-ss"></div>
     </div>
@@ -150,8 +172,26 @@
 <div class="notif-box" id="notif-container"></div>
 
 <script>
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const loader = document.getElementById('main-loader');
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.visibility = 'hidden', 500);
+        }, 1200);
+    });
+
     const games = [
-        { t: 'Lord Voldemort', i: 'https://i.ibb.co/hRHJ4QCN/Chat-GPT-Image-Mar-11-2026-12-51-27-AM.png', size: '1.2 GB', ram: '4GB RAM', dls: 1540, ss: ['https://i.ibb.co/gMbFY5PZ/Whats-App-Image-2026-03-11-at-05-53-29.jpg'] },
+        { 
+            t: 'Lord Voldemort', 
+            i: 'https://i.ibb.co/hRHJ4QCN/Chat-GPT-Image-Mar-11-2026-12-51-27-AM.png', 
+            size: '1.2 GB', 
+            ram: '4GB RAM', 
+            dls: 1540, 
+            ss: [
+                'https://i.ibb.co/r2fKKfp8/Whats-App-Image-2026-03-11-at-05-53-30.jpg', // تمت الإضافة هنا كأول صورة
+                'https://i.ibb.co/gMbFY5PZ/Whats-App-Image-2026-03-11-at-05-53-29.jpg'
+            ] 
+        },
         { t: 'GTA 5 Mobile', i: 'https://i.ibb.co/ccqsLxrm/gta-logo.jpg', size: '2.4 GB', ram: '4GB RAM', dls: 2841, ss: ['https://i.ibb.co/JWfVvjCz/gta-2.jpg', 'https://i.ibb.co/tph5ytTX/gta-1.jpg'] },
         { t: 'Assetto Corsa Mobile', i: 'https://i.ibb.co/cczBTgw3/Assetto-Corsa-Mobile.webp', size: '1.8 GB', ram: '4GB RAM', dls: 1421, ss: ['https://i.ibb.co/gZNXy7y7/Assetto-Corsa-Mobile-2.jpg', 'https://i.ibb.co/SXQm7p5H/Assetto-Corsa-Mobile.jpg'] },
         { t: 'BeamNG.drive Mobile', i: 'https://i.ibb.co/8nS1jHYP/Beam-NG-drive-Mobile.jpg', size: '1.2 GB', ram: '6GB RAM', dls: 1150, ss: ['https://i.ibb.co/8LsrJvcW/Beam-NG-drive-Mobile-22.avif', 'https://i.ibb.co/MyM5LDk2/Beam-NG-drive-Mobile-1.jpg'] },
@@ -177,24 +217,32 @@
         {c:'Spain', f:'https://flagcdn.com/w40/es.png'}
     ];
 
-    const targetFlags = [
-        {c:'United States', f:'https://flagcdn.com/w40/us.png'},
-        {c:'United Kingdom', f:'https://flagcdn.com/w40/gb.png'},
-        {c:'Germany', f:'https://flagcdn.com/w40/de.png'}
-    ];
+    const observerOptions = { threshold: 0.1 };
+    const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+            }
+        });
+    }, observerOptions);
 
     function render(data = games) {
         const grid = document.getElementById('game-grid');
         grid.innerHTML = '';
         data.forEach((g) => {
             const originalIdx = games.findIndex(x => x.t === g.t);
-            grid.innerHTML += `
-                <div class="card" id="card-${originalIdx}" onclick="prepareOpen(${originalIdx})">
-                    <div class="card-loader" id="loader-${originalIdx}"><div class="spinner"></div></div>
-                    <img src="${g.i}">
-                    <h3>${g.t}</h3>
-                    <div class="dl-count" id="dl-grid-${originalIdx}">${g.dls.toLocaleString()} DL</div>
-                </div>`;
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.id = `card-${originalIdx}`;
+            card.onclick = () => prepareOpen(originalIdx);
+            card.innerHTML = `
+                <div class="card-loader" id="loader-${originalIdx}"><div class="spinner"></div></div>
+                <img src="${g.i}" loading="lazy">
+                <h3>${g.t}</h3>
+                <div class="dl-count" id="dl-grid-${originalIdx}">${g.dls.toLocaleString()} DL</div>
+            `;
+            grid.appendChild(card);
+            scrollObserver.observe(card);
         });
     }
 
@@ -213,10 +261,10 @@
             document.getElementById('m-size-val').innerText = g.size;
             document.getElementById('m-ram-val').innerText = g.ram;
             const ssBox = document.getElementById('m-ss'); ssBox.innerHTML = '';
-            g.ss.forEach(src => { ssBox.innerHTML += `<img src="${src}">`; });
+            g.ss.forEach(src => { ssBox.innerHTML += `<img src="${src}" loading="lazy">`; });
             document.getElementById('popup-overlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
-        }, 800);
+        }, 600);
     }
 
     function closeP() { document.getElementById('popup-overlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
@@ -225,56 +273,46 @@
     function smartCheck() { event.currentTarget.innerHTML = "VERIFYING..."; setTimeout(openCPA, 1000); }
 
     const bTxt = "⚠️ HUMAN VERIFICATION REQUIRED — COMPLETE A SAMPLE TASK";
-    bTxt.split("").forEach((l, i) => { const s = document.createElement('span'); s.innerText = l === " " ? "\u00A0" : l; s.style.animationDelay = (i * 0.05) + "s"; document.getElementById('bannerWave').appendChild(s); });
+    bTxt.split("").forEach((l, i) => { 
+        const s = document.createElement('span'); 
+        s.innerText = l === " " ? "\u00A0" : l; 
+        s.style.animationDelay = (i * 0.05) + "s"; 
+        document.getElementById('bannerWave').appendChild(s); 
+    });
 
     function showNotif(game, flag) {
         game.dls += 1;
         const gameIdx = games.findIndex(x => x.t === game.t);
         const cardEl = document.getElementById(`card-${gameIdx}`);
         const gridDl = document.getElementById(`dl-grid-${gameIdx}`);
-        
         if(cardEl) {
             gridDl.innerText = game.dls.toLocaleString() + " DL";
             cardEl.classList.remove('card-live-update');
-            void cardEl.offsetWidth; // RE-TRIGGER PULSE
+            void cardEl.offsetWidth; 
             cardEl.classList.add('card-live-update');
         }
-        
         const el = document.createElement('div');
         el.className = 'live-notif';
         el.innerHTML = `<img src="${flag.f}" class="flag"> <span>Someone in <b>${flag.c}</b> downloaded <b>${game.t}</b>!</span>`;
         document.getElementById('notif-container').appendChild(el);
-        setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 500); }, 4000);
-    }
-
-    function startSpamWave() {
-        let count = 0;
-        const interval = setInterval(() => {
-            const flag = targetFlags[Math.floor(Math.random() * targetFlags.length)];
-            showNotif(games[0], flag); 
-            count++;
-            if (count >= 10) clearInterval(interval);
-        }, 1200);
+        setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 500); }, 3000);
     }
 
     function triggerRandomNotif() {
-        const delay = Math.random() * 10000 + 5000;
+        const delay = Math.random() * 8000 + 4000;
         setTimeout(() => {
-            const g = games[Math.floor(Math.random() * (games.length - 1)) + 1]; 
+            const g = games[Math.floor(Math.random() * games.length)]; 
             const f = flags[Math.floor(Math.random() * flags.length)];
             showNotif(g, f);
             triggerRandomNotif();
         }, delay);
     }
 
-    // Timers: No initial spam, just every 1 minute.
-    setInterval(startSpamWave, 60000); 
     triggerRandomNotif(); 
-
     setInterval(() => {
         let v = parseInt(document.getElementById('live-v').innerText);
         document.getElementById('live-v').innerText = v + (Math.random() > 0.5 ? 1 : -1);
-    }, 5000);
+    }, 4000);
 
     render();
 </script>
