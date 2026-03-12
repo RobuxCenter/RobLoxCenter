@@ -13,6 +13,7 @@
             --text-dark: #1d1d1f; 
         }
 
+        /* 1. Loader Screen */
         #main-loader {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -88,8 +89,25 @@
         .info-label { font-weight: 700; color: #666; }
         .info-value { font-weight: 800; color: #000; }
 
-        .ss-list { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
-        .ss-list img { width: 100%; border-radius: 16px; border: 1px solid var(--glass-border); }
+        /* 2. Horizontal Screenshots Slider */
+        .ss-list { 
+            display: flex; 
+            gap: 15px; 
+            margin-top: 20px; 
+            overflow-x: auto; 
+            scroll-snap-type: x mandatory; 
+            -webkit-overflow-scrolling: touch; 
+            padding-bottom: 15px;
+        }
+        .ss-list::-webkit-scrollbar { display: none; }
+        .ss-list img { 
+            width: 85%; 
+            flex-shrink: 0; 
+            scroll-snap-align: center; 
+            border-radius: 16px; 
+            border: 1px solid var(--glass-border); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
 
         .wa-float { position: fixed; bottom: 25px; right: 25px; background: #25D366; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 10000; text-decoration: none; animation: pulseWa 2s infinite; }
         @keyframes pulseWa { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
@@ -154,7 +172,7 @@
             <div class="info-item"><span class="info-label">Requirements</span><span class="info-value" id="m-ram-val"></span></div>
             <div class="info-item"><span class="info-label">Price</span><span class="info-value" style="color:#28cd41;">FREE</span></div>
         </div>
-        <div style="font-size: 14px; font-weight: 800; color: var(--accent-blue);"><i class="fa-solid fa-image"></i> PREVIEW GALLERY</div>
+        <div style="font-size: 14px; font-weight: 800; color: var(--accent-blue);"><i class="fa-solid fa-image"></i> PREVIEW GALLERY (Swipe to View)</div>
         <div class="ss-list" id="m-ss"></div>
     </div>
 </div>
@@ -172,6 +190,7 @@
 <div class="notif-box" id="notif-container"></div>
 
 <script>
+    // Loader Script
     window.addEventListener('load', () => {
         setTimeout(() => {
             const loader = document.getElementById('main-loader');
@@ -188,7 +207,7 @@
             ram: '4GB RAM', 
             dls: 1540, 
             ss: [
-                'https://i.ibb.co/r2fKKfp8/Whats-App-Image-2026-03-11-at-05-53-30.jpg', // تمت الإضافة هنا كأول صورة
+                'https://i.ibb.co/r2fKKfp8/Whats-App-Image-2026-03-11-at-05-53-30.jpg', // NEW FIRST IMAGE
                 'https://i.ibb.co/gMbFY5PZ/Whats-App-Image-2026-03-11-at-05-53-29.jpg'
             ] 
         },
@@ -260,10 +279,13 @@
             document.getElementById('m-img').src = g.i;
             document.getElementById('m-size-val').innerText = g.size;
             document.getElementById('m-ram-val').innerText = g.ram;
-            const ssBox = document.getElementById('m-ss'); ssBox.innerHTML = '';
+            const ssBox = document.getElementById('m-ss'); 
+            ssBox.innerHTML = '';
             g.ss.forEach(src => { ssBox.innerHTML += `<img src="${src}" loading="lazy">`; });
+            
             document.getElementById('popup-overlay').style.display = 'block';
             document.body.style.overflow = 'hidden';
+            ssBox.scrollLeft = 0; // Reset slider position
         }, 600);
     }
 
